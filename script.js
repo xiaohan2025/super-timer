@@ -292,6 +292,24 @@ elements.stopwatchReset.addEventListener('click', resetStopwatch);
 // 自定义播报时间点管理
 let customAlertTimes = []; // 存储用户添加的时间点（秒数）
 
+// 从 localStorage 加载保存的时间点
+function loadAlertTimes() {
+    const saved = localStorage.getItem('customAlertTimes');
+    if (saved) {
+        try {
+            customAlertTimes = JSON.parse(saved);
+            renderAlertList();
+        } catch (e) {
+            console.error('加载语音播报设置失败:', e);
+        }
+    }
+}
+
+// 保存时间点到 localStorage
+function saveAlertTimes() {
+    localStorage.setItem('customAlertTimes', JSON.stringify(customAlertTimes));
+}
+
 function addAlertTime() {
     const minutes = parseInt(document.getElementById('alert-minutes').value) || 0;
     const seconds = parseInt(document.getElementById('alert-seconds').value) || 0;
@@ -313,6 +331,7 @@ function addAlertTime() {
     customAlertTimes.sort((a, b) => b - a); // 降序排列
 
     renderAlertList();
+    saveAlertTimes(); // 保存到 localStorage
 
     // 清空输入
     document.getElementById('alert-minutes').value = 0;
@@ -322,6 +341,7 @@ function addAlertTime() {
 function removeAlertTime(timeInSeconds) {
     customAlertTimes = customAlertTimes.filter(t => t !== timeInSeconds);
     renderAlertList();
+    saveAlertTimes(); // 保存到 localStorage
 }
 
 function renderAlertList() {
@@ -610,3 +630,4 @@ elements.pomodoroReset.addEventListener('click', resetPomodoro);
 // ==================== 初始化 ====================
 updateStopwatchDisplay();
 updatePomodoroDisplay();
+loadAlertTimes(); // 加载保存的语音播报时间点
