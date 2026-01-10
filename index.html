@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超级计时器 | Super Timer</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- 粒子星空背景 -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- 主题切换按钮 -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题">
+        🌙
+    </button>
+
+    <div class="app-container">
+        <!-- 顶部标签栏 -->
+        <nav class="tab-bar">
+            <button class="tab-btn active" data-tab="stopwatch">
+                <span class="tab-icon">⏱️</span>
+                <span class="tab-label">秒表</span>
+            </button>
+            <button class="tab-btn" data-tab="countdown">
+                <span class="tab-icon">⏳</span>
+                <span class="tab-label">倒计时</span>
+            </button>
+            <button class="tab-btn" data-tab="pomodoro">
+                <span class="tab-icon">🍅</span>
+                <span class="tab-label">番茄钟</span>
+            </button>
+        </nav>
+
+        <!-- 秒表面板 -->
+        <section id="stopwatch" class="panel active">
+            <div class="time-display">
+                <span id="stopwatch-time">00:00:00</span>
+            </div>
+            <div class="controls">
+                <button id="stopwatch-start" class="btn btn-start">开始</button>
+                <button id="stopwatch-lap" class="btn btn-lap" disabled>计次</button>
+                <button id="stopwatch-reset" class="btn btn-reset" disabled>复位</button>
+            </div>
+            <div class="lap-list-container">
+                <ul id="lap-list" class="lap-list"></ul>
+            </div>
+        </section>
+
+        <!-- 倒计时面板 -->
+        <section id="countdown" class="panel">
+            <!-- 设置界面 -->
+            <div id="countdown-setup" class="countdown-setup">
+                <h2>设置目标时间</h2>
+                <div class="time-input-group">
+                    <div class="time-input-item">
+                        <input type="number" id="input-hours" min="0" max="23" value="0">
+                        <label>时</label>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-input-item">
+                        <input type="number" id="input-minutes" min="0" max="59" value="5">
+                        <label>分</label>
+                    </div>
+                    <span class="time-separator">:</span>
+                    <div class="time-input-item">
+                        <input type="number" id="input-seconds" min="0" max="59" value="0">
+                        <label>秒</label>
+                    </div>
+                </div>
+                <div class="voice-settings">
+                    <div class="voice-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="voice-enabled" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>语音播报</span>
+                    </div>
+                    <div id="voice-options" class="voice-options">
+                        <p class="voice-options-label">播报时间点：</p>
+                        <div class="time-point-input">
+                            <input type="number" id="alert-minutes" min="0" max="59" value="0" placeholder="分">
+                            <span>:</span>
+                            <input type="number" id="alert-seconds" min="0" max="59" value="10" placeholder="秒">
+                            <button type="button" id="add-alert" class="btn-add">➕ 添加</button>
+                        </div>
+                        <div class="alert-list" id="alert-list">
+                            <!-- 已添加的时间点会显示在这里 -->
+                        </div>
+                    </div>
+                </div>
+                <button id="countdown-set" class="btn btn-start btn-large">开始计时</button>
+            </div>
+            <!-- 计时界面 -->
+            <div id="countdown-running" class="countdown-running hidden">
+                <div class="countdown-info">
+                    <span class="countdown-label">目标</span>
+                    <span id="countdown-target">00:05:00</span>
+                </div>
+                <div class="time-display">
+                    <span id="countdown-time">00:00:00</span>
+                </div>
+                <div class="remaining-display">
+                    <span class="remaining-label">剩余</span>
+                    <span id="countdown-remaining">00:05:00</span>
+                </div>
+                <div class="controls">
+                    <button id="countdown-start" class="btn btn-start">开始</button>
+                    <button id="countdown-lap" class="btn btn-lap" disabled>标记</button>
+                    <button id="countdown-reset" class="btn btn-reset" disabled>复位</button>
+                </div>
+                <div class="lap-list-container">
+                    <ul id="countdown-lap-list" class="lap-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 番茄钟面板 -->
+        <section id="pomodoro" class="panel">
+            <div class="pomodoro-status">
+                <span id="pomodoro-mode">专注时间</span>
+            </div>
+            <div class="time-display pomodoro-display">
+                <span id="pomodoro-time">25:00</span>
+            </div>
+            <div class="pomodoro-progress">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="pomodoro-start" class="btn btn-start">开始专注</button>
+                <button id="pomodoro-skip" class="btn btn-lap">跳过</button>
+                <button id="pomodoro-reset" class="btn btn-reset">重置</button>
+            </div>
+            <div class="pomodoro-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="pomodoro-count">0</span>
+                    <span class="stat-label">已完成</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
