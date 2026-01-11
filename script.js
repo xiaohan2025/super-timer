@@ -514,12 +514,75 @@ function updateCountdownDisplay() {
     }
 }
 
+// 屏幕闪烁效果
+function flashScreen(color = 'rgba(255, 0, 0, 0.3)', duration = 500) {
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: ${color};
+        z-index: 9999;
+        pointer-events: none;
+        animation: flash-animation ${duration}ms ease-out;
+    `;
+
+    // 添加闪烁动画
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes flash-animation {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(flash);
+
+    setTimeout(() => {
+        document.body.removeChild(flash);
+        document.head.removeChild(style);
+    }, duration);
+}
+
+// 振动设备(仅手机支持)
+function vibrate(pattern = [200, 100, 200]) {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(pattern);
+    }
+}
+
+// 播放提示音(不同次数代表不同含义)
+function playAlertBeep(count = 1) {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let delay = 0;
+
+    for (let i = 0; i < count; i++) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = 800; // 高音哔声
+        oscillator.type = 'sine';
+
+        const startTime = audioContext.currentTime + delay;
+        gainNode.gain.setValueAtTime(0.3, startTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + 0.2);
+
+        delay += 0.3; // 每个哔声间隔0.3秒
+    }
+}
+
 function checkVoiceAlerts() {
     if (!state.countdown.voiceEnabled) return;
 
     const remaining = state.countdown.target - state.countdown.time;
-    const countdownEnabled = document.getElementById('alert-countdown')?.checked;
-
     const alerts = [];
 
     // 添加用户自定义的时间点
@@ -539,19 +602,33 @@ function checkVoiceAlerts() {
         alerts.push({ time, text });
     });
 
-
-
     // 时间到总是播报
     alerts.push({ time: 0, text: '时间到' });
 
     alerts.forEach(alert => {
         if (remaining === alert.time && !state.countdown.spokenAlerts.has(alert.time)) {
-            speak(alert.text);
-            state.countdown.spokenAlerts.add(alert.time);
+            // 响10次提示音
+            playAlertBeep(10);
 
             if (alert.time === 0) {
-                playBeep();
+                // 时间到 - 红色闪烁
+                flashScreen('rgba(255, 0, 0, 0.5)', 1500);
+                vibrate([300, 100, 300, 100, 300, 100, 300, 100, 300]);
+            } else if (alert.time <= 60) {
+                // 1分钟内 - 橙色闪烁
+                flashScreen('rgba(255, 165, 0, 0.4)', 1000);
+                vibrate([200, 100, 200, 100, 200, 100, 200, 100, 200]);
+            } else if (alert.time <= 300) {
+                // 5分钟内 - 黄色闪烁  
+                flashScreen('rgba(255, 255, 0, 0.3)', 800);
+                vibrate([200, 100, 200, 100, 200, 100, 200]);
+            } else {
+                // 其他时间 - 蓝色闪烁
+                flashScreen('rgba(100, 200, 255, 0.3)', 600);
+                vibrate([150, 100, 150, 100, 150, 100, 150]);
             }
+
+            state.countdown.spokenAlerts.add(alert.time);
         }
     });
 }
