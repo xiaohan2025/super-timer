@@ -245,34 +245,58 @@ let audioContextUnlocked = false;
 function unlockAudioContext() {
     if (audioContextUnlocked) return;
 
-    // 方法1: 尝试播放一个无声的utterance来解锁speechSynthesis
+    console.log('正在解锁音频...');
+
+    // 方法1: 立即播放一个有声的utterance来强制解锁
     if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance('');
-        utterance.volume = 0.01;
-        speechSynthesis.speak(utterance);
+        // 先取消所有待播放的
+        speechSynthesis.cancel();
+
+        // 等待语音引擎加载
+        const voices = speechSynthesis.getVoices();
+        if (voices.length === 0) {
+            // 如果语音列表为空,等待加载
+            speechSynthesis.addEventListener('voiceschanged', () => {
+                console.log('语音引擎已加载');
+            }, { once: true });
+        }
+
+        // 播放一个非常短的测试语音来解锁
+        const testUtterance = new SpeechSynthesisUtterance('好');
+        testUtterance.volume = 0.01; // 几乎听不见
+        testUtterance.rate = 10; // 非常快
+        testUtterance.lang = 'zh-CN';
+
+        // 立即播放
+        speechSynthesis.speak(testUtterance);
+
+        console.log('语音解锁已触发');
     }
 
-    // 方法2: 创建一个短暂的AudioContext来解锁音频
+    // 方法2: 创建AudioContext解锁(备用)
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioContext = new AudioContext();
+
+        // 创建一个0.01秒的极短音频
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
 
-        gainNode.gain.value = 0.001; // 几乎无声
+        gainNode.gain.value = 0.01;
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
 
+        oscillator.frequency.value = 440;
         oscillator.start(0);
         oscillator.stop(audioContext.currentTime + 0.01);
 
-        audioContext.close();
+        setTimeout(() => audioContext.close(), 100);
     } catch (e) {
-        console.log('音频解锁失败,但不影响功能:', e);
+        console.log('AudioContext解锁失败:', e);
     }
 
     audioContextUnlocked = true;
-    console.log('音频上下文已解锁');
+    console.log('✅ 音频上下文已解锁');
 }
 
 function playBeep() {
@@ -540,9 +564,12 @@ function setCountdown() {
     const totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
     if (totalSeconds <= 0) {
-        alert('请设置一个有效的时间！');
+        alert('请设置一个有效的时间!');
         return;
     }
+
+    // 提前解锁音频(用户点击了按钮)
+    unlockAudioContext();
 
     state.countdown.target = totalSeconds;
     state.countdown.time = 0;
