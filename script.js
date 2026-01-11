@@ -633,14 +633,8 @@ const scrollUpBtn = document.getElementById('scroll-up');
 const scrollDownBtn = document.getElementById('scroll-down');
 
 // 监听页面滚动,控制按钮显示
-window.addEventListener('scroll', () => {
-    const scrollable = document.body.scrollHeight > window.innerHeight + 100;
-    if (scrollable) {
-        scrollNav.classList.add('show');
-    } else {
-        scrollNav.classList.remove('show');
-    }
-});
+// 始终显示滚动按钮
+scrollNav.classList.add('show');
 
 // 向上滚动 - 回到顶部
 scrollUpBtn.addEventListener('click', () => {
