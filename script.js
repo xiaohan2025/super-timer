@@ -239,6 +239,42 @@ function speak(text) {
     }
 }
 
+// 音频上下文解锁 - 解决移动端浏览器自动播放限制
+let audioContextUnlocked = false;
+
+function unlockAudioContext() {
+    if (audioContextUnlocked) return;
+
+    // 方法1: 尝试播放一个无声的utterance来解锁speechSynthesis
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance('');
+        utterance.volume = 0.01;
+        speechSynthesis.speak(utterance);
+    }
+
+    // 方法2: 创建一个短暂的AudioContext来解锁音频
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        gainNode.gain.value = 0.001; // 几乎无声
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.start(0);
+        oscillator.stop(audioContext.currentTime + 0.01);
+
+        audioContext.close();
+    } catch (e) {
+        console.log('音频解锁失败,但不影响功能:', e);
+    }
+
+    audioContextUnlocked = true;
+    console.log('音频上下文已解锁');
+}
+
 function playBeep() {
     // 使用 Web Audio API 播放提示音
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -530,6 +566,9 @@ function startCountdown() {
         elements.countdownStart.classList.remove('running');
     } else {
         // 开始
+        // 解锁音频上下文(移动端需要)
+        unlockAudioContext();
+
         state.countdown.running = true;
         elements.countdownStart.textContent = '暂停';
         elements.countdownStart.classList.add('running');
