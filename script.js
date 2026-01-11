@@ -627,6 +627,26 @@ elements.pomodoroStart.addEventListener('click', startPomodoro);
 elements.pomodoroSkip.addEventListener('click', skipPomodoro);
 elements.pomodoroReset.addEventListener('click', resetPomodoro);
 
+// ==================== 回到顶部按钮 ====================
+const scrollTopBtn = document.getElementById('scroll-top');
+
+// 监听页面滚动
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+        scrollTopBtn.classList.add('show');
+    } else {
+        scrollTopBtn.classList.remove('show');
+    }
+});
+
+// 点击按钮滚动到顶部
+scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
 // ==================== 初始化 ====================
 updateStopwatchDisplay();
 updatePomodoroDisplay();

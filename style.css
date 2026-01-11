@@ -84,6 +84,46 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
+/* ========== 回到顶部按钮 ========== */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px rgba(176, 132, 255, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+}
+
+.scroll-top-btn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+    transform: scale(1.15) translateY(-3px);
+    box-shadow: 0 6px 30px rgba(176, 132, 255, 0.6);
+}
+
+.scroll-top-btn:active {
+    transform: scale(1.05);
+}
+
 /* ========== 主容器 (Glassmorphism) ========== */
 .app-container {
     width: 100%;
@@ -750,56 +790,98 @@ body {
 /* 平板设备 - 横屏 (Landscape) */
 @media (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
     body {
-        padding: 20px;
+        padding: 15px;
         align-items: flex-start;
     }
 
     .app-container {
         max-width: 700px;
-        margin-top: 20px;
+        margin-top: 10px;
     }
 
     .time-display {
-        padding: 30px 0;
+        padding: 15px 0;
     }
 
     .time-display span {
-        font-size: 64px;
-        letter-spacing: 6px;
+        font-size: 52px;
+        letter-spacing: 4px;
     }
 
     .pomodoro-display span {
-        font-size: 72px;
+        font-size: 58px;
     }
 
     .panel {
-        min-height: 320px;
-        padding: 25px 30px;
+        min-height: auto;
+        padding: 15px 20px;
     }
 
     .lap-list-container {
-        max-height: 150px;
+        max-height: 120px;
     }
 
     .controls {
-        margin-top: 15px;
+        margin-top: 10px;
+        gap: 12px;
     }
 
     .btn {
-        padding: 14px 28px;
-        font-size: 16px;
+        padding: 10px 24px;
+        font-size: 15px;
     }
 
     .time-input-item input {
-        width: 80px;
-        height: 80px;
-        font-size: 32px;
+        width: 60px;
+        height: 60px;
+        font-size: 26px;
+    }
+
+    .time-input-item label {
+        margin-top: 4px;
+        font-size: 12px;
+    }
+
+    .time-separator {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    .countdown-setup h2 {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .voice-settings {
+        margin-top: 15px;
+    }
+
+    .btn-large {
+        padding: 14px;
+        font-size: 16px;
+        margin-top: 20px;
     }
 
     .theme-toggle {
-        width: 55px;
-        height: 55px;
-        font-size: 26px;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+    }
+
+    .tab-bar {
+        padding: 6px;
+    }
+
+    .tab-btn {
+        padding: 10px 6px;
+    }
+
+    .tab-icon {
+        font-size: 22px;
+    }
+
+    .tab-label {
+        font-size: 11px;
     }
 }
 
