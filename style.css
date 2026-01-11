@@ -695,14 +695,226 @@ body {
     background: var(--accent-blue);
 }
 
-/* ========== 响应式 ========== */
-@media (max-width: 480px) {
+/* ========== 响应式设计 ========== */
+
+/* 平板设备 - 竖屏 (Portrait) */
+@media (min-width: 481px) and (max-width: 1024px) and (orientation: portrait) {
+    body {
+        padding: 30px 20px;
+    }
+
+    .app-container {
+        max-width: 600px;
+    }
+
     .time-display span {
-        font-size: 42px;
+        font-size: 80px;
+        letter-spacing: 8px;
+    }
+
+    .pomodoro-display span {
+        font-size: 90px;
+    }
+
+    .tab-icon {
+        font-size: 28px;
+    }
+
+    .tab-label {
+        font-size: 14px;
+    }
+
+    .btn {
+        padding: 16px 32px;
+        font-size: 18px;
+    }
+
+    .time-input-item input {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+    }
+
+    .panel {
+        min-height: 500px;
+        padding: 40px 30px;
+    }
+
+    .theme-toggle {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+}
+
+/* 平板设备 - 横屏 (Landscape) */
+@media (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    body {
+        padding: 20px;
+        align-items: flex-start;
+    }
+
+    .app-container {
+        max-width: 700px;
+        margin-top: 20px;
+    }
+
+    .time-display {
+        padding: 30px 0;
+    }
+
+    .time-display span {
+        font-size: 64px;
+        letter-spacing: 6px;
+    }
+
+    .pomodoro-display span {
+        font-size: 72px;
+    }
+
+    .panel {
+        min-height: 320px;
+        padding: 25px 30px;
+    }
+
+    .lap-list-container {
+        max-height: 150px;
+    }
+
+    .controls {
+        margin-top: 15px;
+    }
+
+    .btn {
+        padding: 14px 28px;
+        font-size: 16px;
+    }
+
+    .time-input-item input {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+    }
+
+    .theme-toggle {
+        width: 55px;
+        height: 55px;
+        font-size: 26px;
+    }
+}
+
+/* 大平板设备 */
+@media (min-width: 1025px) {
+    .app-container {
+        max-width: 500px;
+    }
+
+    .time-display span {
+        font-size: 72px;
+    }
+
+    .pomodoro-display span {
+        font-size: 80px;
+    }
+}
+
+/* 手机设备 */
+@media (max-width: 480px) {
+    body {
+        padding: 15px;
+    }
+
+    .time-display span {
+        font-size: 48px;
+        letter-spacing: 4px;
     }
 
     .pomodoro-display span {
         font-size: 56px;
+    }
+
+    .time-input-item input {
+        width: 65px;
+        height: 65px;
+        font-size: 26px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .theme-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 22px;
+        top: 15px;
+        right: 15px;
+    }
+
+    .panel {
+        padding: 25px 15px;
+    }
+
+    .tab-icon {
+        font-size: 20px;
+    }
+
+    .tab-label {
+        font-size: 11px;
+    }
+}
+
+/* 手机横屏 - 特殊优化 */
+@media (max-width: 915px) and (orientation: landscape) and (max-height: 430px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .app-container {
+        max-width: 600px;
+        margin-top: 10px;
+    }
+
+    .time-display {
+        padding: 20px 0;
+    }
+
+    .time-display span {
+        font-size: 48px;
+        letter-spacing: 4px;
+    }
+
+    .pomodoro-display span {
+        font-size: 54px;
+    }
+
+    .panel {
+        min-height: auto;
+        padding: 15px 20px;
+    }
+
+    .lap-list-container {
+        max-height: 100px;
+    }
+
+    .controls {
+        margin-top: 10px;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .theme-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        right: 10px;
     }
 
     .time-input-item input {
@@ -711,8 +923,8 @@ body {
         font-size: 24px;
     }
 
-    .btn {
-        padding: 12px 20px;
-        font-size: 14px;
+    .time-separator {
+        font-size: 30px;
+        margin-bottom: 10px;
     }
 }
