@@ -180,9 +180,62 @@ function speak(text) {
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'zh-CN';
-        utterance.rate = 1.1;
-        utterance.pitch = 1;
-        speechSynthesis.speak(utterance);
+
+        // 获取所有可用的语音
+        let voices = speechSynthesis.getVoices();
+
+        // 如果语音列表为空,等待语音加载完成
+        if (voices.length === 0) {
+            speechSynthesis.addEventListener('voiceschanged', () => {
+                voices = speechSynthesis.getVoices();
+                setVoice();
+            }, { once: true });
+        } else {
+            setVoice();
+        }
+
+        function setVoice() {
+            // 优先选择以下高质量中文声音(按优先级排序)
+            const preferredVoices = [
+                'Microsoft Yunxi Online (Natural) - Chinese (Mainland)',  // Edge最佳女声
+                'Microsoft Xiaoxiao Online (Natural) - Chinese (Mainland)', // Edge女声
+                'Microsoft Yunyang Online (Natural) - Chinese (Mainland)',  // Edge男声
+                'Google 普通话（中国大陆）', // Chrome中文
+                'Microsoft Huihui - Chinese (Simplified, PRC)', // Windows中文
+            ];
+
+            // 尝试找到首选的声音
+            let selectedVoice = null;
+            for (const preferred of preferredVoices) {
+                selectedVoice = voices.find(voice => voice.name.includes(preferred));
+                if (selectedVoice) break;
+            }
+
+            // 如果没找到首选,就找任何中文声音
+            if (!selectedVoice) {
+                selectedVoice = voices.find(voice =>
+                    voice.lang.includes('zh-CN') ||
+                    voice.lang.includes('zh-TW') ||
+                    voice.lang.includes('zh')
+                );
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            // 优化语音参数
+            utterance.rate = 1.0;    // 正常语速
+            utterance.pitch = 1.0;   // 正常音调  
+            utterance.volume = 1.0;  // 最大音量
+
+            speechSynthesis.speak(utterance);
+        }
+
+        // 如果语音列表已经加载,直接设置
+        if (voices.length > 0) {
+            setVoice();
+        }
     }
 }
 
@@ -416,11 +469,11 @@ function checkVoiceAlerts() {
 
         let text = '';
         if (minutes > 0 && seconds > 0) {
-            text = `还剩${minutes}分${seconds}秒`;
+            text = `距考试结束还有${minutes}分${seconds}秒`;
         } else if (minutes > 0) {
-            text = `还剩${minutes}分钟`;
+            text = `距考试结束还有${minutes}分钟`;
         } else {
-            text = `还剩${seconds}秒`;
+            text = `距考试结束还有${seconds}秒`;
         }
 
         alerts.push({ time, text });
@@ -650,6 +703,57 @@ scrollDownBtn.addEventListener('click', () => {
         top: window.scrollY + window.innerHeight * 0.8,
         behavior: 'smooth'
     });
+});
+
+// ==================== 全屏按钮 ====================
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+// 切换全屏模式
+fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // 进入全屏
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+            docEl.requestFullscreen();
+        } else if (docEl.webkitRequestFullscreen) {
+            // Safari/iOS
+            docEl.webkitRequestFullscreen();
+        } else if (docEl.mozRequestFullScreen) {
+            docEl.mozRequestFullScreen();
+        } else if (docEl.msRequestFullscreen) {
+            docEl.msRequestFullscreen();
+        }
+        fullscreenBtn.textContent = '✕';
+    } else {
+        // 退出全屏
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        fullscreenBtn.textContent = '⛶';
+    }
+});
+
+// 监听全屏状态变化
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+        fullscreenBtn.textContent = '✕';
+    } else {
+        fullscreenBtn.textContent = '⛶';
+    }
+});
+
+document.addEventListener('webkitfullscreenchange', () => {
+    if (document.webkitFullscreenElement) {
+        fullscreenBtn.textContent = '✕';
+    } else {
+        fullscreenBtn.textContent = '⛶';
+    }
 });
 
 // ==================== 初始化 ====================
