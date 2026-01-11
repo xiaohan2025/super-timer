@@ -84,11 +84,26 @@ body {
     box-shadow: var(--shadow-glow);
 }
 
-/* ========== 回到顶部按钮 ========== */
-.scroll-top-btn {
+/* ========== 滚动导航按钮 ========== */
+.scroll-nav {
     position: fixed;
-    bottom: 30px;
     right: 20px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.scroll-nav.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-btn {
     width: 50px;
     height: 50px;
     background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
@@ -98,29 +113,19 @@ body {
     border-radius: 50%;
     font-size: 24px;
     cursor: pointer;
-    z-index: 999;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition);
     box-shadow: 0 4px 20px rgba(176, 132, 255, 0.4);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
 }
 
-.scroll-top-btn.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.scroll-top-btn:hover {
-    transform: scale(1.15) translateY(-3px);
+.scroll-btn:hover {
+    transform: scale(1.15);
     box-shadow: 0 6px 30px rgba(176, 132, 255, 0.6);
 }
 
-.scroll-top-btn:active {
+.scroll-btn:active {
     transform: scale(1.05);
 }
 
@@ -248,7 +253,7 @@ body {
 
 /* 运行中的数字闪烁效果 */
 .time-display.running span {
-    animation: textGlow 1s ease-in-out infinite alternate, pulse 1s ease-in-out infinite;
+    animation: textGlow 1s ease-in-out infinite alternate, pulse 1s;
 }
 
 @keyframes pulse {

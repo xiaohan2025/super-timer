@@ -627,22 +627,33 @@ elements.pomodoroStart.addEventListener('click', startPomodoro);
 elements.pomodoroSkip.addEventListener('click', skipPomodoro);
 elements.pomodoroReset.addEventListener('click', resetPomodoro);
 
-// ==================== 回到顶部按钮 ====================
-const scrollTopBtn = document.getElementById('scroll-top');
+// ==================== 滚动导航按钮 ====================
+const scrollNav = document.querySelector('.scroll-nav');
+const scrollUpBtn = document.getElementById('scroll-up');
+const scrollDownBtn = document.getElementById('scroll-down');
 
-// 监听页面滚动
+// 监听页面滚动,控制按钮显示
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-        scrollTopBtn.classList.add('show');
+    const scrollable = document.body.scrollHeight > window.innerHeight + 100;
+    if (scrollable) {
+        scrollNav.classList.add('show');
     } else {
-        scrollTopBtn.classList.remove('show');
+        scrollNav.classList.remove('show');
     }
 });
 
-// 点击按钮滚动到顶部
-scrollTopBtn.addEventListener('click', () => {
+// 向上滚动 - 回到顶部
+scrollUpBtn.addEventListener('click', () => {
     window.scrollTo({
         top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// 向下滚动 - 滚动一个视口高度
+scrollDownBtn.addEventListener('click', () => {
+    window.scrollTo({
+        top: window.scrollY + window.innerHeight * 0.8,
         behavior: 'smooth'
     });
 });
