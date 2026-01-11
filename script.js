@@ -683,6 +683,14 @@ function startCountdown() {
             state.countdown.time++;
             updateCountdownDisplay();
             checkVoiceAlerts();
+
+            // 时间到了自动停止
+            if (state.countdown.time >= state.countdown.target) {
+                clearInterval(state.countdown.interval);
+                state.countdown.running = false;
+                elements.countdownStart.textContent = '继续';
+                elements.countdownStart.classList.remove('running');
+            }
         }, 1000);
     }
 }
